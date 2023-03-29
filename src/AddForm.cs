@@ -7,7 +7,7 @@ namespace rawhid
 {
     public partial class AddForm : Form
     {
-        private const int m_buffSize = 64;
+        private int m_buffSize = 64;
         private Command m_cmd;
 
         public AddForm(Command cmd=null)
@@ -19,6 +19,10 @@ namespace rawhid
             if (cmd == null)
             {
                 m_cmd = new Command("TEST0", "-", Keys.None, new byte[m_buffSize]);
+            }
+            else
+            {
+                m_buffSize = cmd.RData.Length;
             }
 
             NameTextBox.Text = m_cmd.Name;
@@ -52,7 +56,7 @@ namespace rawhid
 
             if (data.Length / 16 > 4)
             {
-                DataGridView.RowHeadersWidth = 30;
+                DataGridView.RowHeadersWidth = 13;
             } else {
                 DataGridView.RowHeadersWidth = 30;
             }

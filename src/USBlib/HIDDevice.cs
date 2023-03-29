@@ -274,7 +274,7 @@ namespace UsbLibrary
 			if (m_isConnected) return false;
 
 			// Create the file from the device path
-			m_hHandle = CreateFile(devicePath, GENERIC_READ | GENERIC_WRITE, 0, IntPtr.Zero, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, IntPtr.Zero);
+			m_hHandle = CreateFile(devicePath, (uint)FileAccess.ReadWrite, (uint)FileShare.ReadWrite, IntPtr.Zero, (uint)FileMode.Open, FILE_FLAG_OVERLAPPED, IntPtr.Zero);
 
 			if ( m_hHandle != InvalidHandleValue || m_hHandle == null)	// if the open worked...
 			{
@@ -381,16 +381,22 @@ namespace UsbLibrary
 				return false;
 			}
 
-			if (report.Length > m_outputReportLength)
-			{
-				throw new Exception("Report len must not exceed " +
-									m_outputReportLength.ToString(CultureInfo.InvariantCulture) +
-                                    " bytes");
-			}
 
-			try
-			{
-				m_oFile.Write(report.ToArray(), 0, report.Length);
+            byte[] sending = new byte[m_outputReportLength];
+            
+			if (report.Length > m_outputReportLength)
+                Array.Copy(report.ToArray(), sending, m_outputReportLength);
+			else
+	            Array.Copy(report.ToArray(), sending, report.Length);
+            //{
+            //	throw new Exception("Report len must not exceed " +
+            //						m_outputReportLength.ToString(CultureInfo.InvariantCulture) +
+            //                                 " bytes");
+            //}
+
+            try
+            {
+				m_oFile.Write(sending, 0, m_outputReportLength);
 				HandleDataSend(report);
 			}
 			catch
@@ -408,9 +414,16 @@ namespace UsbLibrary
                 return false;
             }
 
+            byte[] sending = new byte[m_outputReportLength];
+
+            if (report.Length > m_outputReportLength)
+                Array.Copy(report.ToArray(), sending, m_outputReportLength);
+            else
+                Array.Copy(report.ToArray(), sending, report.Length);
+
             try
             {
-                //HidD_SetFeature(m_hHandle, report.ToArray(), report.Length);
+                HidD_SetFeature(m_hHandle, sending, m_outputReportLength);
             }
             catch
             {

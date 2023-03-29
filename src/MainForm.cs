@@ -281,7 +281,12 @@ namespace rawhid
 
         private void AddToolStripButton_Click(object sender, EventArgs e)
         {
-            Command cmd = new Command("CMD 0", "-", Keys.None, new byte[64]);
+            int len = 64;
+            if (m_usb.IsConnected)
+            {
+                len = m_usb.OutReportLength;
+            }
+            Command cmd = new Command("CMD 0", "-", Keys.None, new byte[len]);
 
             var additem = new AddForm(cmd);
             var res = additem.ShowDialog();

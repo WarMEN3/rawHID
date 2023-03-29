@@ -58,21 +58,18 @@ namespace rawhid
             try
             {
                 var slist = val.Split(' ');
+                if (RData == null)
+                {
+                    RData = new byte[slist.Length];
+                }
                 for (int i = 0; i < slist.Length; i++)
                 {
-                    if (RData == null)
-                    {
-                        RData = new byte[64];
-                    }
-                    if (i < RData.Length)
-                    {
-                        RData[i] = Convert.ToByte(slist[i], 16);
-                    }
+                    RData[i] = Convert.ToByte(slist[i], 16);
                 }
 
                 return true;
             } catch {
-                RData = new byte[64];
+                RData = null;
                 MessageBox.Show("DATA: "+val, "Data Error");
                 return false;
             }

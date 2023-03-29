@@ -209,7 +209,7 @@ namespace UsbLibrary
 		protected static extern bool HidD_GetNumInputBuffers(IntPtr hFile, ref Int32 NumberBuffers);
 
 		[DllImport("hid.dll", SetLastError = true)]
-		protected static extern bool HidD_SetFeature(IntPtr hFile, ref Byte lpReportBuffer, Int32 ReportBufferLength);
+		protected static extern bool HidD_SetFeature(IntPtr hFile, Byte[] lpReportBuffer, Int32 ReportBufferLength);
 
 		[DllImport("hid.dll", SetLastError = true)]
 		protected static extern bool HidD_SetNumInputBuffers(IntPtr hFile, Int32 NumberBuffers);
